@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark">
+    <style>
+        body {
+            width: auto;
+            background-color: #f3f3f8;
+            /* color: #303D53; */
+            /* display: flex;
+            flex-direction: column; */
+        }
+
+        .container {
+            width: 170px;
+            align-items: center;
+        }
+
+        .left {
+            float: left;
+            margin: 3px;
+        }
+
+        .text {
+            resize: none;           
+            padding: 8px;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            background-color: #6d696932;
+            color: #fff;
+            border-radius: 2px;
+        }
+
+        .button {
+            border: none;
+            display: flex;
+            padding: 8px 18px;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            vertical-align: middle;
+            overflow: hidden;
+            text-decoration: none;
+            background-color: #e9686b;
+            color: #fff;
+            text-align: center;
+            transition: .2s ease-out;
+            white-space: nowrap;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.12), 0px 1px 2px rgba(0, 0, 0, 0.24);
+            border-radius: 2px;
+        }
+
+        .button:hover {
+            background-color: #ba3537;
+            ;
+        }
+
+        html {
+            height: 100%;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #282933;
+                color: #9d9da2;
+            }
+
+            .button {
+                color: #ECECF1;
+                background-color: #1c584e;
+            }
+
+            .button:hover {
+                background-color: #1b9984;
+            }
+
+            .left {
+                color: #ECECF1;
+            }
+        }
+    </style>
+    <script type="text/javascript">
+
+        function writeToClipboard() {
+            fetch('/data')
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (json) {
+                    var text = json.Value;
+
+                    var fakeinput = document.createElement("textarea");
+                    fakeinput.value = text;
+                    document.body.appendChild(fakeinput);
+                    fakeinput.select();
+                    document.execCommand("copy");
+                    alert('"' + text + '" has been copied!');
+                    document.body.removeChild(fakeinput);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+
+        function printToScreen() {
+            var xmlhttp;
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    var item = JSON.parse(this.responseText);
+                    alert(item.Value);
+                }
+            }
+            xmlhttp.open("GET", "/data", true);
+
+            xmlhttp.send()
+        }
+    </script>
+</head>
+
+<body>
+    {{if .Success}}
+    <div align="center">
+        <h1>Success!</h1>
+    </div>
+    {{else}}
+    <div align="center">
+        <div class="container">
+            <h1>Clipboard</h1>
+            <form method="post">
+                <label class="left">Input value :</label><br />
+                <!-- <input type="textarea" name="value" class="left"><br /> -->
+                <textarea name="value" autofocus class="left text" placeholder="Input your text in it."></textarea>
+                <input type="submit" value="Submit" class="left button">
+                <!-- <input type="button" value="Read" class="left button" onclick="printToScreen()"> -->
+                <input type="button" value="Copy" class="left button" onclick="writeToClipboard()"><br />
+            </form>
+        </div>
+    </div>
+    <br>
+    {{end}}
+</body>
+
+</html>
